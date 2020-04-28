@@ -7,22 +7,36 @@
     tools:context=".FirstFragment">
 
     <TextView
-        android:id="@+id/textview_first"
+        android:id="@+id/text_add_files"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_first_fragment"
-        app:layout_constraintBottom_toTopOf="@id/button_first"
+        android:text="@string/add_file_error"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toTopOf="@id/button_import"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/button_first"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/button_import"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/next"
+        android:src="@drawable/ic_file_download_black_24dp"
+        app:backgroundTint="#fdfdfd"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/button_camera"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_add_files" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/button_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_photo_camera_black_24dp"
+        app:backgroundTint="#fdfdfd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textview_first" />
+        app:layout_constraintStart_toEndOf="@id/button_import"
+        app:layout_constraintTop_toBottomOf="@id/text_add_files" />
 </androidx.constraintlayout.widget.ConstraintLayout>
