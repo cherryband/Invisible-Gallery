@@ -54,14 +54,11 @@ public class Util {
         try (Cursor returnCursor = resolver.query(uri, null, null, null)) {
             assert returnCursor != null;
             returnCursor.moveToFirst();
-            Log.d("inspector_mole", Arrays.toString(returnCursor.getColumnNames()));
-            Log.d("inspector_mole", OpenableColumns.DISPLAY_NAME);
             int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
 
-            return returnCursor.getString(13);
+            return returnCursor.getString(nameIndex);
         }
     }
-
 
     public static String getCurrentTimestamp() {
         Date now = Calendar.getInstance().getTime();

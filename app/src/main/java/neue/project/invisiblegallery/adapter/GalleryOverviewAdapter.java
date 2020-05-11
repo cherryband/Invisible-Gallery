@@ -30,9 +30,7 @@ public class GalleryOverviewAdapter extends RecyclerView.Adapter <GalleryOvervie
                 .from(parent.getContext())
                 .inflate(R.layout.viewholder_image_preview, parent, false);
 
-        TextView nameText = v.findViewById(R.id.text_overview_name);
-
-        return new GalleryOverviewViewHolder(nameText);
+        return new GalleryOverviewViewHolder(v);
     }
 
     @Override

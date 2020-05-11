@@ -1,30 +1,40 @@
 package neue.project.invisiblegallery.fragment;
 
 import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.util.List;
 
 import neue.project.invisiblegallery.EmptyListener;
 import neue.project.invisiblegallery.R;
 import neue.project.invisiblegallery.adapter.GalleryOverviewAdapter;
+import neue.project.invisiblegallery.data.Database;
+import neue.project.invisiblegallery.data.Image;
 import neue.project.invisiblegallery.util.Util;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -32,18 +42,17 @@ import static android.app.Activity.RESULT_CANCELED;
 public class GalleryFragment extends Fragment implements EmptyListener {
     private static final int IMPORT_IMAGE = 100;
     private static final int TAKE_PHOTO = 200;
-    private static ConstraintSet onNotEmptyConstraints = new ConstraintSet();
+
+    private ConstraintLayout layout;
+    private FloatingActionButton importButton;
+    private RecyclerView overviewRecycler;
+    private TextView emptyText;
 
     private boolean isCameraAppInstalled = false;
-    private FloatingActionButton importButton;
-    private TextView emptyText;
-    private RecyclerView overviewRecycler;
     private GalleryOverviewAdapter overviewAdapter;
-    private ConstraintSet onEmptyConstraints;
+    private RecyclerView.LayoutManager layoutManager;
 
-    static {
-
-    }
+    private final Handler addImage = new Handler();
 
     @Override
     public View onCreateView (
@@ -59,10 +68,14 @@ public class GalleryFragment extends Fragment implements EmptyListener {
 
     public void onViewCreated (@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        layout = view.findViewById(R.id.constraint_overview);
         importButton = view.findViewById(R.id.button_import);
+        //FloatingActionButton cameraButton = view.findViewById(R.id.button_camera);
         emptyText = view.findViewById(R.id.text_empty_gallery);
         overviewRecycler = view.findViewById(R.id.recycler_gallery_overview);
-        //FloatingActionButton cameraButton = view.findViewById(R.id.button_camera);
+
+        overviewAdapter = new GalleryOverviewAdapter(this);
+        layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 
         initRecycler();
 
@@ -94,8 +107,25 @@ public class GalleryFragment extends Fragment implements EmptyListener {
     }
 
     private void initRecycler () {
-        overviewAdapter = new GalleryOverviewAdapter(this);
+        overviewRecycler.setAdapter(overviewAdapter);
+        overviewRecycler.setLayoutManager(layoutManager);
+        new Thread(new Runnable(){
+            @Override
+            public void run () {
+                final List<Image> images = Database
+                        .open(requireContext().getApplicationContext())
+                        .imageDao()
+                        .getAll();
+                if (images.isEmpty()) return;
 
+                addImage.post(new Runnable() {
+                    @Override
+                    public void run () {
+                        overviewAdapter.addAll(images);
+                    }
+                });
+            }
+        }).start();
     }
 
     @Override
@@ -111,16 +141,12 @@ public class GalleryFragment extends Fragment implements EmptyListener {
                 ParcelFileDescriptor parcelFileDescriptor = resolver.openFileDescriptor(photoUri, "r");
                 assert parcelFileDescriptor != null;
                 final FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-
+                final Context appContext = requireContext().getApplicationContext();
 
                 new Thread(new Runnable(){
                     @Override
                     public void run () {
-                        try {
-                            Util.importFile(fileDescriptor, Util.getFileName(photoUri, resolver), requireContext().getApplicationContext());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        confirmOverride(appContext, Util.getFileName(photoUri, resolver), fileDescriptor);
                     }
                 }).start();
             } catch (IOException e) {
@@ -129,13 +155,61 @@ public class GalleryFragment extends Fragment implements EmptyListener {
         }
     }
 
+    private void confirmOverride (final Context context, final String name, final FileDescriptor descriptor) {
+        List<Image> images = Database.open(context).imageDao().findByName(name);
+        if (!images.isEmpty()){
+            final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            addImage(descriptor, name, context);
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            break;
+                    }
+                }
+            };
+
+            addImage.post(new Runnable() {
+                @Override
+                public void run () {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder
+                            .setMessage(R.string.duplicate_error)
+                            .setPositiveButton("Yes", dialogClickListener)
+                            .setNegativeButton("No", dialogClickListener)
+                            .show();
+                }
+            });
+        } else {
+            addImage(descriptor, name, context);
+        }
+    }
+
+    private void addImage(final FileDescriptor descriptor, final String name, final Context context){
+        try {
+            final Image image = Util.importFile(descriptor, name, context);
+
+            addImage.post(new Runnable() {
+                @Override
+                public void run () {
+                    overviewAdapter.add(image);
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onEmpty () {
-
+        emptyText.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onNotEmpty () {
-
+        emptyText.setVisibility(View.INVISIBLE);
     }
 }
