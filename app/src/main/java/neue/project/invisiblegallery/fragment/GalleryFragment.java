@@ -1,5 +1,6 @@
 package neue.project.invisiblegallery.fragment;
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,7 +19,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +35,7 @@ import neue.project.invisiblegallery.R;
 import neue.project.invisiblegallery.adapter.GalleryOverviewAdapter;
 import neue.project.invisiblegallery.data.Database;
 import neue.project.invisiblegallery.data.Image;
+import neue.project.invisiblegallery.data.ImageDao;
 import neue.project.invisiblegallery.util.Util;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -141,12 +142,11 @@ public class GalleryFragment extends Fragment implements EmptyListener {
                 ParcelFileDescriptor parcelFileDescriptor = resolver.openFileDescriptor(photoUri, "r");
                 assert parcelFileDescriptor != null;
                 final FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                final Context appContext = requireContext().getApplicationContext();
 
                 new Thread(new Runnable(){
                     @Override
                     public void run () {
-                        confirmOverride(appContext, Util.getFileName(photoUri, resolver), fileDescriptor);
+                        confirmOverride(requireContext(), Util.getFileName(photoUri, resolver), fileDescriptor);
                     }
                 }).start();
             } catch (IOException e) {
@@ -156,14 +156,22 @@ public class GalleryFragment extends Fragment implements EmptyListener {
     }
 
     private void confirmOverride (final Context context, final String name, final FileDescriptor descriptor) {
-        List<Image> images = Database.open(context).imageDao().findByName(name);
+        final ImageDao db = Database.open(context.getApplicationContext()).imageDao();
+        final List<Image> images = db.findByName(name);
         if (!images.isEmpty()){
             final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     switch (which){
                         case DialogInterface.BUTTON_POSITIVE:
-                            addImage(descriptor, name, context);
+                            overviewAdapter.remove(images.get(0));
+
+                            new Thread(new Runnable(){
+                                @Override
+                                public void run () {
+                                    db.delete(name);
+                                    addImage(descriptor, name, context.getApplicationContext());}
+                            }).start();
                             break;
 
                         case DialogInterface.BUTTON_NEGATIVE:
@@ -178,13 +186,13 @@ public class GalleryFragment extends Fragment implements EmptyListener {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder
                             .setMessage(R.string.duplicate_error)
-                            .setPositiveButton("Yes", dialogClickListener)
-                            .setNegativeButton("No", dialogClickListener)
+                            .setPositiveButton("Override", dialogClickListener)
+                            .setNegativeButton("Cancel", dialogClickListener)
                             .show();
                 }
             });
         } else {
-            addImage(descriptor, name, context);
+            addImage(descriptor, name, context.getApplicationContext());
         }
     }
 

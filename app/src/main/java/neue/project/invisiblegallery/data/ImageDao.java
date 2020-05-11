@@ -15,6 +15,9 @@ public interface ImageDao {
     @Delete
     void delete (Image image);
 
+    @Query("DELETE FROM image WHERE imageName LIKE :imageName")
+    void delete (String imageName);
+
     @Query ("SELECT * FROM image WHERE imageName LIKE :imageName")
     List <Image> findByName (String imageName);
 

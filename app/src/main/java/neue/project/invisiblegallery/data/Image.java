@@ -2,8 +2,10 @@ package neue.project.invisiblegallery.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.ContactsContract;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -52,6 +54,14 @@ public class Image implements Parcelable {
 
     public String getImageName () {
         return imageName;
+    }
+
+    @Override
+    public boolean equals (@Nullable Object obj) {
+        if (obj instanceof Image){
+            return getImagePath().equals(((Image) obj).getImagePath());
+        }
+        return false;
     }
 }
 
