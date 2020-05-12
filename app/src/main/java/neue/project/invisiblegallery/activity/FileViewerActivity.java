@@ -1,35 +1,40 @@
 package neue.project.invisiblegallery.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.FrameLayout;
-
 import neue.project.invisiblegallery.R;
-import neue.project.invisiblegallery.fragment.GalleryFragment;
+import neue.project.invisiblegallery.data.Image;
+import neue.project.invisiblegallery.fragment.FileViewerFragment;
 
-public class MainActivity extends AppCompatActivity {
-    private GalleryFragment galleryFragment;
+public class FileViewerActivity extends AppCompatActivity {
+    FileViewerFragment fileViewer;
 
     @Override
-    protected void onCreate (Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar_main);
+    protected void onCreate (Bundle prevState) {
+        super.onCreate(prevState);
+        setContentView(R.layout.activity_file_view);
+        Toolbar toolbar = findViewById(R.id.toolbar_file_view);
         setSupportActionBar(toolbar);
 
-        initFragments();
+        initFragments(getImage());
     }
 
-    private void initFragments () {
-        galleryFragment = new GalleryFragment();
+    private Image getImage () {
+        Intent intent = getIntent();
+        return intent.getParcelableExtra(Image.IMAGE_PARCEL);
+    }
+
+    private void initFragments (Image startImage) {
+        fileViewer = FileViewerFragment.newInstance(startImage);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container_main, galleryFragment)
+                .replace(R.id.container_file_view, fileViewer)
                 .commit();
     }
 

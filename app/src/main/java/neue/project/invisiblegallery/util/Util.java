@@ -8,9 +8,6 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
-import androidx.navigation.ActionOnlyNavDirections;
-import androidx.room.Room;
-
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;

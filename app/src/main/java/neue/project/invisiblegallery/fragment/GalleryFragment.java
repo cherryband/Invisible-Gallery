@@ -10,21 +10,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -44,8 +42,6 @@ public class GalleryFragment extends Fragment implements EmptyListener {
     private static final int IMPORT_IMAGE = 100;
     private static final int TAKE_PHOTO = 200;
 
-    private ConstraintLayout layout;
-    private FloatingActionButton importButton;
     private RecyclerView overviewRecycler;
     private TextView emptyText;
 
@@ -69,8 +65,7 @@ public class GalleryFragment extends Fragment implements EmptyListener {
 
     public void onViewCreated (@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        layout = view.findViewById(R.id.constraint_overview);
-        importButton = view.findViewById(R.id.button_import);
+        FloatingActionButton importButton = view.findViewById(R.id.button_import);
         //FloatingActionButton cameraButton = view.findViewById(R.id.button_camera);
         emptyText = view.findViewById(R.id.text_empty_gallery);
         overviewRecycler = view.findViewById(R.id.recycler_gallery_overview);
@@ -107,13 +102,14 @@ public class GalleryFragment extends Fragment implements EmptyListener {
         });*/
     }
 
-    private void initRecycler () {
-        overviewRecycler.setAdapter(overviewAdapter);
-        overviewRecycler.setLayoutManager(layoutManager);
+    @Override
+    public void onResume () {
+        super.onResume();
+
         new Thread(new Runnable(){
             @Override
             public void run () {
-                final List<Image> images = Database
+                final List <Image> images = Database
                         .open(requireContext().getApplicationContext())
                         .imageDao()
                         .getAll();
@@ -122,11 +118,17 @@ public class GalleryFragment extends Fragment implements EmptyListener {
                 addImage.post(new Runnable() {
                     @Override
                     public void run () {
-                        overviewAdapter.addAll(images);
+                        initRecycler();
                     }
                 });
+                overviewAdapter.refresh(images);
             }
         }).start();
+    }
+
+    private void initRecycler () {
+        overviewRecycler.setAdapter(overviewAdapter);
+        overviewRecycler.setLayoutManager(layoutManager);
     }
 
     @Override
@@ -183,8 +185,8 @@ public class GalleryFragment extends Fragment implements EmptyListener {
             addImage.post(new Runnable() {
                 @Override
                 public void run () {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder
+                    new AlertDialog
+                            .Builder(context)
                             .setMessage(R.string.duplicate_error)
                             .setPositiveButton("Override", dialogClickListener)
                             .setNegativeButton("Cancel", dialogClickListener)
