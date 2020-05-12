@@ -6,15 +6,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import neue.project.invisiblegallery.EmptyListener;
-import neue.project.invisiblegallery.data.Image;
-import neue.project.invisiblegallery.viewholder.GalleryOverviewViewHolder;
 import neue.project.invisiblegallery.R;
+import neue.project.invisiblegallery.data.Image;
+import neue.project.invisiblegallery.util.ImageDiffCallback;
+import neue.project.invisiblegallery.viewholder.GalleryOverviewViewHolder;
 
 public class GalleryOverviewAdapter extends RecyclerView.Adapter <GalleryOverviewViewHolder> {
     List <Image> imageList = new ArrayList <>();
@@ -41,6 +43,10 @@ public class GalleryOverviewAdapter extends RecyclerView.Adapter <GalleryOvervie
     @Override
     public int getItemCount () {
         return imageList.size();
+    }
+
+    public boolean isEmpty () {
+        return imageList.isEmpty();
     }
 
     public void add(Image image){
@@ -76,4 +82,18 @@ public class GalleryOverviewAdapter extends RecyclerView.Adapter <GalleryOvervie
     }
 
 
+    public void refresh (List <Image> images) {
+        final ImageDiffCallback callback = new ImageDiffCallback(imageList, images);
+        final DiffUtil.DiffResult result = DiffUtil.calculateDiff(callback);
+
+        if (isEmpty() && ! images.isEmpty()){
+            emptyListener.onNotEmpty();
+        } else if (! isEmpty() && images.isEmpty()){
+            emptyListener.onEmpty();
+        }
+
+        imageList.clear();
+        imageList.addAll(images);
+        result.dispatchUpdatesTo(this);
+    }
 }
