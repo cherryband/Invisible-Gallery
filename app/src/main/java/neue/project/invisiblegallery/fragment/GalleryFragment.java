@@ -73,9 +73,7 @@ public class GalleryFragment extends Fragment implements EmptyListener {
         overviewRecycler = view.findViewById(R.id.recycler_gallery_overview);
 
         overviewAdapter = new GalleryOverviewAdapter(this);
-        layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-
-        initRecycler();
+        layoutManager = new ConstantWidthGridLayoutManager(requireContext(), 200);
 
         importButton.setOnClickListener(new View.OnClickListener() {
             @Override
