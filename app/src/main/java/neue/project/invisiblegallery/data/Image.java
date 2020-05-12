@@ -8,7 +8,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 @Entity
 public class Image implements Parcelable {
@@ -17,18 +22,27 @@ public class Image implements Parcelable {
     private final String imagePath;
     @ColumnInfo (name = "imageName")
     private final String imageName;
+    @ColumnInfo (name = "thumbnailPath")
+    private final String thumbnailPath;
+
+    @Ignore
+    public static final String IMAGE_PARCEL = "neue.project.insivislegallery.data.Image";
 
     protected Image (Parcel in) {
-        this(in.readString(), in.readString());
+        this(in.readString(), in.readString(), in.readString());
     }
 
-    public Image (String imageName, String imagePath) {
+    public Image (String imageName, String imagePath, String thumbnailPath) {
         this.imageName = imageName;
         this.imagePath = imagePath;
+        this.thumbnailPath = thumbnailPath;
     }
 
     @Override
     public void writeToParcel (Parcel dest, int flags) {
+        dest.writeString(imageName);
+        dest.writeString(imagePath);
+        dest.writeString(thumbnailPath);
     }
 
     @Override
@@ -54,6 +68,10 @@ public class Image implements Parcelable {
 
     public String getImageName () {
         return imageName;
+    }
+
+    public String getThumbnailPath () {
+        return thumbnailPath;
     }
 
     @Override

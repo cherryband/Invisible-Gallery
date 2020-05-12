@@ -3,7 +3,6 @@ package neue.project.invisiblegallery.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -37,7 +36,7 @@ public class GalleryOverviewAdapter extends RecyclerView.Adapter <GalleryOvervie
 
     @Override
     public void onBindViewHolder (@NonNull GalleryOverviewViewHolder holder, int position) {
-        holder.getNameText().setText(imageList.get(position).getImageName());
+        holder.setImage(imageList.get(position));
     }
 
     @Override

@@ -4,7 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
@@ -17,7 +20,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -27,9 +29,15 @@ import neue.project.invisiblegallery.data.Database;
 import neue.project.invisiblegallery.data.Image;
 
 public class Util {
-    public static Image importFile(FileDescriptor fileDescriptor, String name, Context ctx) throws IOException {
+    public static Image importFile(Context ctx, FileDescriptor fileDescriptor, String name, Bitmap thumbnail) throws IOException {
         File externalFilesDir = ctx.getExternalFilesDir(null);
+        File cacheDir = new File(externalFilesDir, ".thumbnails");
+        if (! cacheDir.exists() && ! cacheDir.mkdirs()){
+            Log.e("inspector_mole", "Cannot create thumbnail directory; Storage full?");
+        }
+
         File out = new File(externalFilesDir, name);
+        File cache = new File(cacheDir, name);
 
         try (InputStream in = new FileInputStream(fileDescriptor)) {
             try (OutputStream outStream = new FileOutputStream(out)) {
@@ -39,11 +47,16 @@ public class Util {
                 while ((len = in.read(buf)) > 0) {
                     outStream.write(buf, 0, len);
                 }
-                Image newImg = new Image(name, out.getPath());
-                Database.open(ctx).imageDao().insert(newImg);
-                return newImg;
             }
         }
+
+        try (OutputStream outStream = new FileOutputStream(cache)) {
+            thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
+        }
+
+        Image newImg = new Image(name, out.getAbsolutePath(), cache.getAbsolutePath());
+        Database.open(ctx).imageDao().insert(newImg);
+        return newImg;
     }
 
     @SuppressLint ("NewApi")
@@ -55,6 +68,13 @@ public class Util {
 
             return returnCursor.getString(nameIndex);
         }
+    }
+
+    public static Bitmap getThumbnail(Uri uri, ContentResolver resolver) throws IOException {
+        Bitmap bmp = MediaStore.Images.Media.getBitmap(resolver, uri);
+        Bitmap thumbnail = ThumbnailUtils.extractThumbnail(bmp, 420, 420);
+        bmp.recycle();
+        return thumbnail;
     }
 
     public static String getCurrentTimestamp() {

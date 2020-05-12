@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,6 +35,7 @@ import neue.project.invisiblegallery.adapter.GalleryOverviewAdapter;
 import neue.project.invisiblegallery.data.Database;
 import neue.project.invisiblegallery.data.Image;
 import neue.project.invisiblegallery.data.ImageDao;
+import neue.project.invisiblegallery.util.ConstantWidthGridLayoutManager;
 import neue.project.invisiblegallery.util.Util;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -148,7 +150,18 @@ public class GalleryFragment extends Fragment implements EmptyListener {
                 new Thread(new Runnable(){
                     @Override
                     public void run () {
-                        confirmOverride(requireContext(), Util.getFileName(photoUri, resolver), fileDescriptor);
+                        try {
+                            Bitmap thumbnail = Util.getThumbnail(photoUri, resolver);
+                            confirmOverride(requireContext(), Util.getFileName(photoUri, resolver), thumbnail, fileDescriptor);
+                        } catch (final IOException e) {
+                            e.printStackTrace();
+                            addImage.post(new Runnable() {
+                                @Override
+                                public void run () {
+                                    showError(e.getMessage());
+                                }
+                            });
+                        }
                     }
                 }).start();
             } catch (IOException e) {
@@ -157,7 +170,14 @@ public class GalleryFragment extends Fragment implements EmptyListener {
         }
     }
 
-    private void confirmOverride (final Context context, final String name, final FileDescriptor descriptor) {
+    private void showError( String cause){
+        Snackbar
+                .make(overviewRecycler, "Error while importing: "+cause, Snackbar.LENGTH_LONG)
+                .setBackgroundTint(getResources().getColor(R.color.colorBackgroundLight))
+                .show();
+    }
+
+    private void confirmOverride (final Context context, final String name, final Bitmap thumbnail, final FileDescriptor descriptor) {
         final ImageDao db = Database.open(context.getApplicationContext()).imageDao();
         final List<Image> images = db.findByName(name);
         if (!images.isEmpty()){
@@ -172,7 +192,8 @@ public class GalleryFragment extends Fragment implements EmptyListener {
                                 @Override
                                 public void run () {
                                     db.delete(name);
-                                    addImage(descriptor, name, context.getApplicationContext());}
+                                    addImage(context.getApplicationContext(), descriptor, name, thumbnail);
+                                }
                             }).start();
                             break;
 
@@ -194,13 +215,13 @@ public class GalleryFragment extends Fragment implements EmptyListener {
                 }
             });
         } else {
-            addImage(descriptor, name, context.getApplicationContext());
+            addImage(context, descriptor, name, thumbnail);
         }
     }
 
-    private void addImage(final FileDescriptor descriptor, final String name, final Context context){
+    private void addImage(final Context context, final FileDescriptor descriptor, final String name, Bitmap thumbnail){
         try {
-            final Image image = Util.importFile(descriptor, name, context);
+            final Image image = Util.importFile(context, descriptor, name, thumbnail);
 
             addImage.post(new Runnable() {
                 @Override
@@ -210,6 +231,7 @@ public class GalleryFragment extends Fragment implements EmptyListener {
             });
         } catch (IOException e) {
             e.printStackTrace();
+            showError(e.getMessage());
         }
     }
 
