@@ -1,4 +1,4 @@
-package neue.project.invisiblegallery.viewholder;
+package neue.project.invisiblegallery.viewholders;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.File;
 
 import neue.project.invisiblegallery.R;
-import neue.project.invisiblegallery.activity.FileViewerActivity;
+import neue.project.invisiblegallery.activities.FileViewerActivity;
 import neue.project.invisiblegallery.data.Image;
 
 public class GalleryOverviewViewHolder extends RecyclerView.ViewHolder {

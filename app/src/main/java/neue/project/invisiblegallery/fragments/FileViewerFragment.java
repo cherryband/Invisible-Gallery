@@ -1,10 +1,9 @@
-package neue.project.invisiblegallery.fragment;
+package neue.project.invisiblegallery.fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
-import java.util.Objects;
 
 import neue.project.invisiblegallery.R;
 import neue.project.invisiblegallery.data.Image;

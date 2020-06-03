@@ -1,4 +1,4 @@
-package neue.project.invisiblegallery.activity;
+package neue.project.invisiblegallery.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import neue.project.invisiblegallery.R;
 import neue.project.invisiblegallery.data.Image;
-import neue.project.invisiblegallery.fragment.FileViewerFragment;
+import neue.project.invisiblegallery.fragments.FileViewerFragment;
 
 public class FileViewerActivity extends AppCompatActivity {
     FileViewerFragment fileViewer;

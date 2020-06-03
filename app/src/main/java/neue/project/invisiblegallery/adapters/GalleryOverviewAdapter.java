@@ -1,4 +1,4 @@
-package neue.project.invisiblegallery.adapter;
+package neue.project.invisiblegallery.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import neue.project.invisiblegallery.EmptyListener;
+import neue.project.invisiblegallery.interfaces.EmptyListener;
 import neue.project.invisiblegallery.R;
 import neue.project.invisiblegallery.data.Image;
 import neue.project.invisiblegallery.util.ImageDiffCallback;
-import neue.project.invisiblegallery.viewholder.GalleryOverviewViewHolder;
+import neue.project.invisiblegallery.viewholders.GalleryOverviewViewHolder;
 
 public class GalleryOverviewAdapter extends RecyclerView.Adapter <GalleryOverviewViewHolder> {
     List <Image> imageList = new ArrayList <>();

@@ -1,4 +1,4 @@
-package neue.project.invisiblegallery.fragment;
+package neue.project.invisiblegallery.fragments;
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
@@ -20,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -29,9 +28,9 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.List;
 
-import neue.project.invisiblegallery.EmptyListener;
+import neue.project.invisiblegallery.interfaces.EmptyListener;
 import neue.project.invisiblegallery.R;
-import neue.project.invisiblegallery.adapter.GalleryOverviewAdapter;
+import neue.project.invisiblegallery.adapters.GalleryOverviewAdapter;
 import neue.project.invisiblegallery.data.Database;
 import neue.project.invisiblegallery.data.Image;
 import neue.project.invisiblegallery.data.ImageDao;

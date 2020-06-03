@@ -1,4 +1,4 @@
-package neue.project.invisiblegallery.activity;
+package neue.project.invisiblegallery.activities;
 
 import android.os.Bundle;
 
@@ -7,10 +7,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 
 import neue.project.invisiblegallery.R;
-import neue.project.invisiblegallery.fragment.GalleryFragment;
+import neue.project.invisiblegallery.fragments.GalleryFragment;
 
 public class MainActivity extends AppCompatActivity {
     private GalleryFragment galleryFragment;
@@ -21,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
-
         initFragments();
     }
 

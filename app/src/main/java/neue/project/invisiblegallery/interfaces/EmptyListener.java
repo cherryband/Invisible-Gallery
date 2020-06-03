@@ -1,4 +1,4 @@
-package neue.project.invisiblegallery;
+package neue.project.invisiblegallery.interfaces;
 
 public interface EmptyListener {
     public void onEmpty();
