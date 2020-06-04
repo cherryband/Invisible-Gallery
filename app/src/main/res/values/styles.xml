@@ -10,7 +10,21 @@
         <item name="android:textColor">@color/colorText</item>
     </style>
 
+    <style name="AppThemeLight" parent="Theme.AppCompat.Light">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryLight</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorBackground">@color/colorLightBackground</item>
+        <item name="android:textColor">@color/colorTextDark</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppThemeLight.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -24,9 +38,19 @@
         <item name="android:textColor">@color/colorText</item>
     </style>
 
+    <style name="AppThemeLight.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="android:colorBackground">@color/colorLightBackground</item>
+        <item name="android:textColor">@color/colorTextDark</item>
+    </style>
+
     <style name="AppTheme.Dialog" parent="ThemeOverlay.AppCompat.Dialog">
         <item name="android:colorBackground">@color/colorBackground</item>
         <item name="android:textColor">@color/colorText</item>
+    </style>
+
+    <style name="AppThemeLight.Dialog" parent="ThemeOverlay.AppCompat.Dialog">
+        <item name="android:colorBackground">@color/colorLightBackground</item>
+        <item name="android:textColor">@color/colorTextDark</item>
     </style>
 
 </resources>

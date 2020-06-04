@@ -9,5 +9,14 @@
 
     <string name="add_file_error">Add some files!</string>
     <string name="no_camera_error">Cannot open camera. Is camera app installed?</string>
-    <string name="duplicate_error">Filename already exists. Override?</string>]
+    <string name="duplicate_error">Filename already exists. Override?</string>
+
+    <string name="setup_title">Do you want to setup a lock?</string>
+    <string name="auth_required_title">Authentication Required</string>
+    <string name="fingerprint_disabled_warning">Fingerprint authentication is disabled.</string>
+    <string name="skip_auth_register">No, I\'ll pass.</string>
+    <string name="new_password">New Passcode</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="incorrect_password">Incorrect password</string>
 </resources>
