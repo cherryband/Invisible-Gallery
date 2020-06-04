@@ -12,7 +12,7 @@ import neue.project.invisiblegallery.R;
 import neue.project.invisiblegallery.data.Image;
 import neue.project.invisiblegallery.fragments.FileViewerFragment;
 
-public class FileViewerActivity extends AppCompatActivity {
+public class FileViewerActivity extends SecureActivity {
     FileViewerFragment fileViewer;
 
     @Override

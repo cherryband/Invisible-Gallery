@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import neue.project.invisiblegallery.R;
 import neue.project.invisiblegallery.fragments.GalleryFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends SecureActivity {
     private GalleryFragment galleryFragment;
 
     @Override
