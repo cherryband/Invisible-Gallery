@@ -23,4 +23,7 @@ public interface ImageDao {
 
     @Query ("SELECT * FROM image")
     List <Image> getAll ();
+
+    @Query("UPDATE image SET imageName = :newName WHERE imagePath = :imagePath")
+    void rename(String imagePath, String newName);
 }
