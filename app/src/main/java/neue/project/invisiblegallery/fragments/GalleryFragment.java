@@ -50,7 +50,7 @@ public class GalleryFragment extends Fragment implements EmptyListener {
     private GalleryOverviewAdapter overviewAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
-    private final Handler addImage = new Handler();
+    private final Handler handler = new Handler();
 
     @Override
     public View onCreateView (
@@ -82,6 +82,8 @@ public class GalleryFragment extends Fragment implements EmptyListener {
                 startActivityForResult(gallery, IMPORT_IMAGE);
             }
         });
+
+        initRecycler();
         /*
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,14 +115,12 @@ public class GalleryFragment extends Fragment implements EmptyListener {
                         .imageDao()
                         .getAll();
                 if (images.isEmpty()) return;
-
-                addImage.post(new Runnable() {
+                handler.post(new Runnable() {
                     @Override
                     public void run () {
-                        initRecycler();
+                        overviewAdapter.refresh(images);
                     }
                 });
-                overviewAdapter.refresh(images);
             }
         }).start();
     }
@@ -152,7 +152,7 @@ public class GalleryFragment extends Fragment implements EmptyListener {
                             confirmOverride(requireContext(), Util.getFileName(photoUri, resolver), thumbnail, fileDescriptor);
                         } catch (final IOException e) {
                             e.printStackTrace();
-                            addImage.post(new Runnable() {
+                            handler.post(new Runnable() {
                                 @Override
                                 public void run () {
                                     showError(e.getMessage());
@@ -200,7 +200,7 @@ public class GalleryFragment extends Fragment implements EmptyListener {
                 }
             };
 
-            addImage.post(new Runnable() {
+            handler.post(new Runnable() {
                 @Override
                 public void run () {
                     new AlertDialog
@@ -220,10 +220,11 @@ public class GalleryFragment extends Fragment implements EmptyListener {
         try {
             final Image image = Util.importFile(context, descriptor, name, thumbnail);
 
-            addImage.post(new Runnable() {
+            handler.post(new Runnable() {
                 @Override
                 public void run () {
                     overviewAdapter.add(image);
+                    overviewRecycler.smoothScrollToPosition(overviewAdapter.getItemCount() - 1);
                 }
             });
         } catch (IOException e) {
