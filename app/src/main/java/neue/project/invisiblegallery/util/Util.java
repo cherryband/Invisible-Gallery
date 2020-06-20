@@ -100,8 +100,9 @@ public class Util {
 
     public static Bitmap getThumbnail(Uri uri, ContentResolver resolver) throws IOException {
         Bitmap bmp = MediaStore.Images.Media.getBitmap(resolver, uri);
-        //bmp.recycle();
-        return ThumbnailUtils.extractThumbnail(bmp, 420, 420);
+        Bitmap bitmap = ThumbnailUtils.extractThumbnail(bmp, 420, 420);
+        bmp.recycle();
+        return bitmap;
     }
 
     // Based on supported image extensions of Android: https://developer.android.com/guide/topics/media/media-formats#image-formats
