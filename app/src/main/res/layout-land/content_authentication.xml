@@ -18,7 +18,7 @@
         app:layout_constraintBottom_toTopOf="@+id/button_fingerprint"
         app:layout_constraintEnd_toStartOf="@id/button_confirm_password"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
@@ -31,7 +31,7 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/text_fp_warning"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/edit_password" />
 
     <ImageButton
@@ -56,9 +56,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="@dimen/margin"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginBottom="@dimen/margin"
         android:fontFamily="sans-serif-light"
         android:lineSpacingExtra="8sp"
@@ -67,8 +67,8 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="@color/colorTextDark"
         android:textStyle="italic"
-        app:layout_constraintBottom_toTopOf="@+id/edit_password"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
@@ -77,17 +77,16 @@
         android:id="@+id/text_fp_warning"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin"
         android:layout_marginTop="@dimen/margin"
         android:layout_marginEnd="@dimen/margin"
         android:text="@string/fingerprint_disabled_warning"
         android:textColor="#6A676D"
         android:textStyle="italic"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/button_skip_auth_register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/button_fingerprint" />
 
     <Button
@@ -100,8 +99,20 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#6A676D"
         android:textStyle="italic"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/guideline" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent=".5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
