@@ -3,10 +3,11 @@
     <color name="colorPrimary">#490E9F</color>
     <color name="colorPrimaryDark">#260B6A</color>
     <color name="colorPrimaryLight">#6432E0</color>
+    <color name="colorError">#F12D2D</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="colorBackground">#0F0D15</color>
-    <color name="colorLightBackground">#F2F0F7</color>
+    <color name="colorLightBackground">#FBF9FF</color>
     <color name="colorBackgroundLight">#3C3947</color>
     <color name="colorText">#ECF7F3FB</color>
-    <color name="colorTextDark">#EC0B0214</color>
+    <color name="colorTextDark">#EC0C0117</color>
 </resources>
