@@ -20,6 +20,7 @@ import neue.project.invisiblegallery.util.Util;
 public class FileViewerActivity extends SecureActivity {
     FileViewerFragment fileViewer;
     private final Handler handler = new Handler();
+    private Toolbar toolbar;
 
     private Image startImage;
 
@@ -27,13 +28,14 @@ public class FileViewerActivity extends SecureActivity {
     protected void onCreate (Bundle prevState) {
         super.onCreate(prevState);
         setContentView(R.layout.activity_file_view);
-        Toolbar toolbar = findViewById(R.id.toolbar_file_view);
+        toolbar = findViewById(R.id.toolbar_file_view);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getImage();
 
+        toolbar.setTitle(startImage.getImageName());
         initFragments();
     }
 
@@ -131,6 +133,8 @@ public class FileViewerActivity extends SecureActivity {
                 Toast
                         .makeText(FileViewerActivity.this, toastMsg, Toast.LENGTH_SHORT)
                         .show();
+
+                toolbar.setTitle(startImage.getImageName());
             }
         });
     }
