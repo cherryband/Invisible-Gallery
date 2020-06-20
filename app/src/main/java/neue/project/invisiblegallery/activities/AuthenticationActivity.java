@@ -2,6 +2,7 @@ package neue.project.invisiblegallery.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -10,8 +11,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricManager;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,6 +31,7 @@ public class AuthenticationActivity extends SecureActivity {
     private ImageButton confirmPasswordButton;
     private FloatingActionButton fingerprintButton;
     private EditText passwordEdit;
+
 
     private String password;
 
@@ -61,6 +65,26 @@ public class AuthenticationActivity extends SecureActivity {
                 pass();
             }
         });
+
+        BiometricManager biometricManager = BiometricManager.from(this);
+        switch (biometricManager.canAuthenticate()) {
+            case BiometricManager.BIOMETRIC_SUCCESS:
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
+                setDisabledReason(getString(R.string.fingerprint_disabled_warning));
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
+
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
+
+                break;
+        }
+    }
+
+    private void setDisabledReason(String string) {
+        fpWarningText.setText(string);
+        fingerprintButton.setBackgroundColor(getResources().getColor(R.color.colorText));
     }
 
     private void authenticateOrPass() {
@@ -89,7 +113,8 @@ public class AuthenticationActivity extends SecureActivity {
                     pass();
                 } else {
                     passwordEdit.clearComposingText();
-                    Snackbar.make(v, R.string.incorrect_password, Snackbar.LENGTH_LONG).show();
+                    passwordEdit.setText("");
+                    Toast.makeText(getBaseContext(), R.string.incorrect_password, Toast.LENGTH_SHORT).show();
                 }
             }
         });
