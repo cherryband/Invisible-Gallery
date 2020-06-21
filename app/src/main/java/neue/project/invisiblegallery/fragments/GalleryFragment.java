@@ -114,7 +114,6 @@ public class GalleryFragment extends Fragment implements EmptyListener {
                         .open(requireContext().getApplicationContext())
                         .imageDao()
                         .getAll();
-                if (images.isEmpty()) return;
                 handler.post(new Runnable() {
                     @Override
                     public void run () {
