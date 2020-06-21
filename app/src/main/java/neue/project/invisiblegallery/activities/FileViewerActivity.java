@@ -35,8 +35,14 @@ public class FileViewerActivity extends SecureActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getImage();
 
-        toolbar.setTitle(startImage.getImageName());
         initFragments();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                toolbar.setTitle(startImage.getImageName());
+            }
+        });
     }
 
     private void getImage () {
